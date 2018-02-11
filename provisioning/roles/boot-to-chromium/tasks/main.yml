@@ -1,0 +1,52 @@
+---
+
+- name: Install packages
+  apt: pkg={{item}} state=installed
+  become: true
+  with_items:
+#  - lxde-core //REMOVE
+  - openbox
+  - xserver-xorg
+  - xinit
+  - x11-xserver-utils
+  - ttf-mscorefonts-installer
+#  - sqlite3
+#  - libnss3
+#  - screen
+#  - unclutter
+  - chromium-browser
+
+- name: Ensures conf dir exists
+  file: path=/home/pi/.config/lxsession/LXDE-pi state=directory
+
+- name: Adding autostart
+  template:  src=autostart dest=/etc/xdg/openbox/autostart
+  become: true
+
+- name: Schedule nightly reboots
+  cron:
+    name: "nightly reboot"
+    minute: "13"
+    hour: "5"
+    job: "shutdown -r now"
+  become: true
+
+- name: "Reboot"
+  shell: sleep 2 && shutdown -r now 'Ansible inititated reboot'
+  become: true
+  async: 1
+  poll: 0
+  ignore_errors: true
+
+- name: wait for server to come back
+  local_action: wait_for
+  args:
+    host: "{{ inventory_hostname }}"
+    port: 22
+    state: started
+    delay: 25
+    timeout: 300
+
+  #template: src=autostart dest=/home/pi/.config/lxsession/LXDE-pi/autostart
+
+#auotlogin graphical? Created symlink /etc/systemd/system/default.target → /lib/systemd/system/graphical.target.

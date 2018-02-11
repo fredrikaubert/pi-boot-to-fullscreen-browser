@@ -1,0 +1,42 @@
+- name: Assign enough memory to GPU
+  lineinfile: >
+    dest=/boot/config.txt
+    regexp=gpu_mem
+    line='gpu_mem=128'
+  become: true
+
+- name: Rotate screen (it's mounted upside down in case)
+  lineinfile: >
+    dest=/boot/config.txt
+    regexp=lcd_rotate
+    line='lcd_rotate={{lcd_rotate}}'
+  become: true
+
+
+#- name: Set hdmi mode
+#  lineinfile: >
+#    dest=/boot/config.txt
+#    regexp=hdmi_group
+#    line='hdmi_group=2'
+#  sudo: true
+
+#- name: Disable overscan
+#  lineinfile: >
+#    dest=/boot/config.txt
+#    regexp=disable_overscan
+#    line='disable_overscan=1'
+#  sudo: true
+
+#- name: Set hdmi mode
+#  lineinfile: >
+#    dest=/boot/config.txt
+#    regexp=hdmi_mode
+#    line='hdmi_mode=87'
+#  sudo: true
+
+#- name: Set hdmi resolution
+#  lineinfile: >
+#    dest=/boot/config.txt
+#    regexp=hdmi_cvt
+#    line='hdmi_cvt=800 480 60 6 0 0 0'
+#  sudo: true

@@ -1,0 +1,6 @@
+
+- hosts: panel
+
+  roles:
+    - screen-config
+    - boot-to-chromium
